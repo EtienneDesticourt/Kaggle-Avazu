@@ -17,19 +17,19 @@ def genFeatures(data):
 
 
 #LOAD TRAINING DATA
-data = loadRowsR(PATH, SEP, (0,600000)) ; print("Done loading.")
+data = loadRowsR(PATH, SEP, (0,100000)) ; print("Done loading.")
 data = np.array(data).T
 training = genFeatures(data)
 target = data[1].astype(np.float)
 
 
 #TRAIN MODEL
-model  = LR(penalty='l2')
+model  = LR(penalty='l2',class_weight={0:0.16,1:0.84})
 model.fit(training, target) ; print("Done training")
 
 
 #TEST MODEL
-data = loadRowsR(PATH, SEP, (600000,630000)) ; print("Done loading.")
+data = loadRowsR(PATH, SEP, (100000,130000)) ; print("Done loading.")
 data = np.array(data).T
 training = genFeatures(data)
 target = data[1].astype(np.float)
@@ -40,7 +40,15 @@ prediction = model.predict_proba(training).T[1].T
 weightOnes = float(sum(target))/len(target)
 weightZeros = 1-weightOnes
 weights = np.zeros(len(target))
-weights[target==0] = weightZeros
-weights[target==1] = weightOnes
+weights[target==0] = weightOnes
+weights[target==1] = weightZeros
 print("Accuracy:",model.score(training, target, weights))
 print("Score:",llfun(target, prediction))
+
+
+y = target
+p = prediction > 0.5
+tn = sum(p[y==0] == y[y==0])
+tp = sum(p[y==1] == y[y==1])
+print(tn,tp)
+

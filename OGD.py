@@ -1,27 +1,42 @@
+from math import sqrt, exp
 import numpy as np
-from math import exp, sqrt
-
+from itertools import islice
+import random
 
 #DATA PREPARATION
 class Generator():
-    def __init__(self, path, separator):
+    def __init__(self, path, separator, numLines):
         self.path = path
         self.sep = separator
-        self.file = open(path, "r")
-        self.file.readline() #skip column names
+        self.numLines = numLines
+        self.open()
+    def open(self):
+        self.file = open(self.path, "r")
+        #islice(self.file, 0, 3)
+        self.file.readline()
     def close(self):
         self.file.close()
     def reset(self):
         self.close()
-        self.file = open(self.path, "r")
-        self.file.readline() #skip column names
+        self.open()
     def getNext(self):
         line = self.file.readline()
         features = np.array(line.split(self.sep)).T #get csv row in array
         target = features[1].astype(np.int) #extract label for this row
         features0 = features[14:24].T #keep relevant features
         features1 = features[2:5].T #keep relevant features
-        features = np.hstack(([1],features0, features1)).astype(np.float) #stack into single feature vector
+        features = np.hstack(([1], features0, features1)).astype(np.float) #stack into single feature vector
+        return (features, target)
+    def getNew(self):
+        r = random.randrange(1,self.numLines)
+        for i in islice(self.file, r-1, r): pass
+        i = i[:-1] #remove line break
+        i = i.split(self.sep)
+        slices = [[1], i[14:24], i[2:5]] #Bias and relevant features
+        #slices = [[1], i[0]]
+        features = np.hstack(slices).astype(np.float)
+        target = int(i[1])
+        self.reset()
         return (features, target)
         
 
@@ -48,53 +63,48 @@ def calcAccuracy(weights, Generator, testRange):
     return accuracy/(lenRange)
 
 
-#FTRL PROXIMAL
+#ONLINE GRADIENT DESCENT
 def predict(x, w):
     inner  = x.dot(w.T)
     if inner < - 100: return 0 #to avoid math overflow errors
     return 1. / (1 + exp(-inner))
 
-def getUpdate(zi, ni): 
-    if abs(zi) < LAMBDA1: return 0
-    sign = abs(zi)/zi
-    return (sign * LAMBDA1 - zi) / ( (BETA + sqrt(ni)) / ALPHA + LAMBDA2)
 
-def train(numExamples, numFeats, Gen):
-    w = np.zeros(numFeats) #Initialize weights
-    z = np.zeros(numFeats)
-    n = np.zeros(numFeats)
-    #g and sigma created and used in same iteration -> no need to put in vect
-    
+def train(x, y, w, numExamples, numFeats, Gen):
     for t in range(numExamples):
-        x, y = Gen.getNext()
-        for i in range(numFeats):
-            w[i] = getUpdate(z[i], n[i]) #update weights
         p = predict(x, w)
-        #store for next example weights calc
-        for i in range(numFeats):
-            g = (p-y)*x[i] #gradient of log loss
-            sigma = ( sqrt(n[i] + g**2) - sqrt(n[i]) ) / ALPHA #Learning rate
-            z[i] += g - sigma * w[i]
-            n[i] += g**2
-##        print(w)
+        w -= 2. * ALPHA * (p-y) * x
     return w
 
+
+#EXECUTE
 #CONSTANTS
-ALPHA = 1.
+ALPHA = 0.0001
 BETA = 1.
 LAMBDA1 = 1.
 LAMBDA2 = 1.
 
 PATH = "C:\\Users\\Etienne\\Downloads\\avazu\\train\\train.csv"
 SEP = ","
-TRAINRANGE = 20000
+TRAINRANGE = 5
 
 
 
-Gen = Generator(PATH, SEP)
+Gen = Generator(PATH, SEP, 1000)
 lengthFeatVect = len(Gen.getNext()[0])
 Gen.reset()
 
-w = train(TRAINRANGE, lengthFeatVect, Gen)
+ERRORTHRESHOLD = 0.1
+MAXITER = 100000
 
-print(calcAccuracy(w, Gen, (0,1000)))
+w = np.zeros(lengthFeatVect)
+for i in range(MAXITER):
+    x, y = Gen.getNext()
+    w = train(x, y, w, TRAINRANGE, lengthFeatVect, Gen)    
+    Gen.reset()
+    i += 1
+    if  i % (MAXITER/10) == 0: print(i)
+    
+Gen.reset()
+print(w)
+print(calcAccuracy(w, Gen, (0,100)))
