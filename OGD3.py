@@ -1,7 +1,7 @@
 from sklearn.linear_model import SGDClassifier
 from sklearn.metrics import accuracy_score
 import numpy as np
-import avuzuScorer as ascor
+import avazuScorer as ascor
 from datetime import datetime
 
 #CONSTANTS
