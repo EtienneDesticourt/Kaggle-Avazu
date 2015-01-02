@@ -24,7 +24,7 @@ target = data[1].astype(np.float)
 
 
 #TRAIN MODEL
-model  = LR(penalty='l2',class_weight={0:0.16,1:0.84})
+model  = LR(penalty='l2')#,class_weight={0:0.16,1:0.84})
 model.fit(training, target) ; print("Done training")
 
 
