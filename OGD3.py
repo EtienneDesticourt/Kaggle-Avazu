@@ -10,13 +10,24 @@ PATH2 = "trainNormalized.csv"
 #PATH = "train.csv"
 NUMROWS = 40428968 #not used
 SEP = ","
-TRAINRANGE = 100000 #Number of examples to include in training
-LENGTHBATCH = 10000 #Number of examples per batch
+TRAINRANGE = 1000000 #Number of examples to include in training
+LENGTHBATCH = 100000 #Number of examples per batch
 NUMBATCH = int(TRAINRANGE / LENGTHBATCH)
 TESTRANGE = [0, 100000]
 EPOCHS = 10
 
 #DATA GENERATION
+def shuffle_in_unison(a, b):
+    assert len(a) == len(b)
+    shuffled_a = np.empty(a.shape, dtype=a.dtype)
+    shuffled_b = np.empty(b.shape, dtype=b.dtype)
+    permutation = np.random.permutation(len(a))
+    for old_index, new_index in enumerate(permutation):
+        shuffled_a[new_index] = a[old_index]
+        shuffled_b[new_index] = b[old_index]
+    return shuffled_a, shuffled_b
+
+
 def generator(path, path2, numBatches, lengthBatch, sep):
     trainFile = open(path, "r")
     trainFile.readline() #discard column names
@@ -38,17 +49,16 @@ def generator(path, path2, numBatches, lengthBatch, sep):
             xBatch.append(example)
             yBatch.append(target)
             odd = not odd
-        xBatch = np.array(xBatch)
-        np.random.shuffle(xBatch)
+        xBatch = np.array(xBatch)        
         yBatch = np.array(yBatch)
-        np.random.shuffle(yBatch)
+        xBatch, yBatch = shuffle_in_unison(xBatch, yBatch)
         yield xBatch, yBatch
         
 
 
 
 #MODEL TRAINING
-Classifier = SGDClassifier(loss='log', alpha=0.00000003)#, class_weight={0:0.85, 1:0.15})#n_iter=100)
+Classifier = SGDClassifier(loss='log', alpha=0.003, shuffle=True)#, class_weight={0:0.85, 1:0.15})#n_iter=100)
 
 for epoch in range(EPOCHS):
     data = generator(PATH, PATH2, NUMBATCH, LENGTHBATCH, SEP) ; print("Done generating training set.")
