@@ -7,6 +7,7 @@ from datetime import datetime
 from avazuScorer import llfun, logloss
 #CONSTANTS
 PATH = "C:\\Users\\Etienne\\Downloads\\avazu\\train\\train.csv"
+OUTPATH = "submission.csv"
 NUMEXAMPLES = 1000000
 BATCHSIZE = 200000
 NUMBATCHES = int(NUMEXAMPLES / BATCHSIZE)
@@ -15,7 +16,7 @@ TESTSIZE = 400000
 
 
 EPOCHS = 5
-ALPHA = 0.000001
+ALPHA = 0.000005
 NFEATURES = 2**24
 ##########
 
@@ -28,7 +29,7 @@ gen = ag.generator3(PATH, NUMBATCHES, BATCHSIZE) ; print("Done generating traini
 
 i=0
 for x, y in gen:    
-    xHash = FH.transform(x)
+    xHash = FH.transform(x) #hash trick
     y = np.array(y)
     
     for epoch in range(EPOCHS):
@@ -61,4 +62,8 @@ print("Precision:", precision)
 print("Recall:", recall)
 print("Accuracy:",Classifier.score(x, y))
 print("Score:",llfun(y, p))
+
+f = open(OUTPATH, "w")
+f2 = open(TESTPATH, "r")
+gen = ag.generator3()
 
