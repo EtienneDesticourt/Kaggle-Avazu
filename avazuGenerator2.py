@@ -64,6 +64,15 @@ def generator3(path, numBatches, lengthBatch, sep=","):
             example = line.split(sep)
             target = float(example[1]) #get click status
             example.pop(1) #remove target from features
+            date = example.pop(1) #remove date
+            year = date[:2]
+            month = date[2:4]
+            day = date[4:6]
+            hour = date[6:8]
+            example.insert(1, year)
+            example.insert(1, month)            
+            example.insert(1, day)            
+            example.insert(1, hour)
             pairs = [(i,1.0) for i in example]
             example = pairs
 ##            if (target != odd): continue
@@ -77,3 +86,35 @@ def generator3(path, numBatches, lengthBatch, sep=","):
             odd = not odd
             exampleIndex +=  1
         yield xBatch, yBatch
+
+def testGenerator(testPath, numBatches, sep=","):
+    testFile = open(testPath,"r")
+    line = testFile.readline() #discard header row
+    perbatch = 5000000/numBatches
+    for batchIndex in range(numBatches):
+        xBatch = []
+        yBatch = []
+        exampleIndex = 0
+        while exampleIndex < perbatch:
+            line = testFile.readline()
+            if line == "": break
+            line = line[:-1]
+            example = line.split(sep)
+            date = example.pop(1) #remove date
+            year = date[:2]
+            month = date[2:4]
+            day = date[4:6]
+            hour = date[6:8]
+            example.insert(1, year)
+            example.insert(1, month)            
+            example.insert(1, day)            
+            example.insert(1, hour)
+            pairs = [(i, 1.) for i in example]
+            example = pairs
+            exampleIndex += 1
+            xBatch.append(example)
+        if len(xBatch) != 0:
+            yield xBatch
+        
+        
+        
