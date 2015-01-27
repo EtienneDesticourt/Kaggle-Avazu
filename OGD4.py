@@ -10,18 +10,19 @@ from avazuScorer import llfun, logloss
 #IDEAS
 #hour separation DID NOT WORK
 #feature combinations
-#parameter generation with genetic algorithm
+#parameter generation with genetic algorithm MEH
 #gpu implementation cuda
 
 
 #CONSTANTS
-PATH = "E:\\Users\\Etienne2\\Downloads\\subset3.csv"
+##PATH = "E:\\Users\\Etienne2\\Downloads\\subset3.csv"
+PATH = "E:\\Users\\Etienne2\\Downloads\\train.csv"
 LOCALTESTPATH = "subset2.csv"
 OUTPATH = "submission.csv"
 TESTPATH = "test.csv"
 
-NUMEXAMPLES = 36000000
-BATCHSIZE = 600000
+NUMEXAMPLES = 42000000
+BATCHSIZE = 100000
 NUMBATCHES = int(NUMEXAMPLES / BATCHSIZE)
 NUMFEATS = 23
 
@@ -32,6 +33,8 @@ NUMTESTBATCHES = int(TESTSIZE / TESTBATCHSIZE)
 EPOCHS = 5
 ALPHA = 0.000005
 NFEATURES = 2**24
+##ALPHA = 0.0000028
+##NFEATURES = 2**23
 ##########
 
 
@@ -50,7 +53,7 @@ for x, y in gen:
         #xHash, y = shuffle(xHash, y)
         Classifier.partial_fit(xHash, y, [0,1])
     i+=1
-    if (i % (NUMBATCHES/60)) == 0: print(datetime.now(), "example:", i*BATCHSIZE)
+    if (i % (NUMBATCHES/10)) == 0: print(datetime.now(), "example:", i*BATCHSIZE)
 
 
 del x, y
@@ -93,7 +96,7 @@ del x, y, tp, fp, fn, p, data
 input("Submission follows.")
 f = open(OUTPATH, "w")
 f.write("id,click\n") #header row
-NUMBATCH = 10
+NUMBATCH = 40
 gen = ag.testGenerator(TESTPATH, NUMBATCH) ; print("Done generating submission set.")
 
 i = 0

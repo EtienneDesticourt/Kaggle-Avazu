@@ -60,6 +60,7 @@ def generator3(path, numBatches, lengthBatch, sep=","):
         exampleIndex = 0
         while exampleIndex < lengthBatch:
             line = trainFile.readline()
+            if line == "": break
             line = line[:-1] #discard line break char
             example = line.split(sep)
             target = float(example[1]) #get click status
@@ -85,7 +86,8 @@ def generator3(path, numBatches, lengthBatch, sep=","):
             yBatch.append(target)
             odd = not odd
             exampleIndex +=  1
-        yield xBatch, yBatch
+        if len(xBatch) != 0:
+            yield xBatch, yBatch
 
 def testGenerator(testPath, numBatches, sep=","):
     testFile = open(testPath,"r")
