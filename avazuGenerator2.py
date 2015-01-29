@@ -48,6 +48,7 @@ def generator2(path, numBatches, lengthBatch):
             yBatch.append(target)
         #xBatch, yBatch = shuffle_in_unison(xBatch, yBatch)
         yield xBatch, yBatch
+    trainFile.close()
 
 def generator3(path, numBatches, lengthBatch, sep=","):
     trainFile = open(path, "r")
@@ -88,6 +89,7 @@ def generator3(path, numBatches, lengthBatch, sep=","):
             exampleIndex +=  1
         if len(xBatch) != 0:
             yield xBatch, yBatch
+    trainFile.close()
 
 def testGenerator(testPath, numBatches, sep=","):
     testFile = open(testPath,"r")
@@ -117,6 +119,16 @@ def testGenerator(testPath, numBatches, sep=","):
             xBatch.append(example)
         if len(xBatch) != 0:
             yield xBatch
+    testFile.close()
         
         
-        
+def rawGenerator(path, sep=","):
+    "Yields raw split rows with no feature engineering or target separation."
+    file = open(path, "r")
+    row = file.readline() #discard column names
+    while row != "":
+        row = file.readline()
+        row = row[:-1] #discard line break char
+        features = row.split(sep) #split into features
+        yield features
+    file.close()

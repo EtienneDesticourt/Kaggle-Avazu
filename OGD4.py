@@ -12,6 +12,8 @@ from avazuScorer import llfun, logloss
 #feature combinations
 #parameter generation with genetic algorithm MEH
 #gpu implementation cuda
+#Feature engineering ideas:
+#   binary working feature : week end or week <9am >5pm:0 else:1
 
 
 #CONSTANTS
