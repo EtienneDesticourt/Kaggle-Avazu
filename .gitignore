@@ -52,3 +52,5 @@ train.csv
 train2.csv
 sampleSubmission.csv
 __pycache__/
+*.csv
+*.npy
