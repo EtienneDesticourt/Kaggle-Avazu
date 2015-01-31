@@ -1,4 +1,3 @@
-import avazuGenerator2 as ag
 import numpy as np
 from sklearn.feature_extraction import FeatureHasher
 from sklearn.linear_model import SGDClassifier
@@ -10,8 +9,7 @@ class Model:
         #Init scikit models
         self.FH = FeatureHasher(n_features=numFeatures, input_type='pair')
         self.Classifier = SGDClassifier(loss='log', alpha=learningRate, shuffle=mustShuffle)
-    def train(self, path, numBatches, sizeBatch, numEpochs,  v=False):
-        gen = ag.generator3(path, numBatches, sizeBatch) ; if v: print("Done generating training set.")
+    def train(self, gen, numEpochs,  v=False):
 
         i = 0
         for x, y in gen: #For each batch
@@ -19,11 +17,10 @@ class Model:
             y = np.array(y)            
             for epoch in range(numEpochs):
                 self.Classifier.partial_fit(xHash, y, [0,1])
-                
-            if v and (i % (numBatches/60)) == 0: print(datetime.now(), "example:", i*sizeBatch)
-            i+=1
-    def test(self, path, numBatches, sizeBatch,  v=False):
-        gen = ag.generator3(path, numBatches, sizeBatch) ; print("Done generating testing set.")
+            i += len(x)
+            if v : print(str(datetime.now())[:-7] , "example:", i)
+            
+    def test(self, gen,  v=False):
 
         #init target and prediction arrays
         ytot = np.array([])
@@ -42,6 +39,14 @@ class Model:
         if v: print("Score:", self.score(ytot, ptot))
         
         return (ytot, ptot)
+    def predictBatch(self, batch):
+        hashedBatch = self.FH.transform(batch)
+        prediction = self.Classifier.predict_proba(hashedBatch)
+        return prediction
+    def generatePrediction(self, generator):
+        for xBatch, idBatch in generator:
+            prediction = self.predictBatch(xBatch)
+            yield prediction, idBatch
     def score(self, target, prediction):
         return llfun(target, prediction)
                 

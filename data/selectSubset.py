@@ -1,15 +1,17 @@
 
 
-f = open("E:\\Users\\Etienne2\\Downloads\\train.csv","r")
-f2 = open("tenth.csv","w")
+f = open("trainsetPhone.csv","r")
 
 r = f.readline()
-f2.write(r)
 RANGE = 40428968
+
 for i in range(RANGE):
     r = f.readline()
-    if i % 10  == 0 and i % 100 != 0:
-        f2.write(r)
+    if r == "": break
+    l = r.split(",")
+    day = l[2][4:6]
+    if day == "29" or day == "30" :
+        print(i)
     if i % 40000 == 0:
         print(i/40428968)
         

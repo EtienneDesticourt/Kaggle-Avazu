@@ -66,27 +66,12 @@ def generator3(path, numBatches, lengthBatch, sep=","):
             line = line[:-1] #discard line break char
             example = line.split(sep)
             target = float(example[1]) #get click status
-            example.pop(1) #remove target from features
-            date = example.pop(1) #remove date
-            year = date[:2]
-            month = date[2:4]
-            day = date[4:6]
-            hour = date[6:8]
-            example.insert(1, year)
-            example.insert(1, month)            
-            example.insert(1, day)            
-            example.insert(1, hour)
+            example.pop(1) #remove target from features            
+            example.pop(0) #remove ID
             pairs = [(i,1.0) for i in example]
             example = pairs
-##            if (target != odd): continue
-##            if (target==0):
-##                negPerPos += 1
-##            else:
-##                negPerPos = 0
-##            if (negPerPos >= 10): continue
             xBatch.append(example)
             yBatch.append(target)
-            odd = not odd
             exampleIndex +=  1
         if len(xBatch) != 0:
             yield xBatch, yBatch

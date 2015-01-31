@@ -10,10 +10,7 @@ class Model:
         #Init scikit models
         self.FH = FeatureHasher(n_features=numFeatures, input_type='pair')
         self.Classifier = SGDClassifier(loss='log', alpha=learningRate, shuffle=mustShuffle)
-    def train(self, path, numBatches, sizeBatch, numEpochs,  v=False):
-        gen = ag.generator3(path, numBatches, sizeBatch)
-        if v: print("Done generating training set.")
-
+    def train(self, gen, numEpochs,  v=False):
         i = 0
         for x, y in gen: #For each batch
             xHash = self.FH.transform(x) #hash trick
@@ -23,10 +20,8 @@ class Model:
                 
             if v and (i % (numBatches/60)) == 0: print(datetime.now(), "example:", i*sizeBatch)
             i+=1
-    def test(self, path, numBatches, sizeBatch,  v=False):
-        gen = ag.generator3(path, numBatches, sizeBatch)
-        if v: print("Done generating testing set.")
-
+    def test(self, gen,  v=False):
+        
         #init target and prediction arrays
         ytot = np.array([])
         ptot = np.array([])
