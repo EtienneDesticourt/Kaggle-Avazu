@@ -1,6 +1,6 @@
 from avazuGenerators import rawGenerator
 
-PATH = "..\\data\\trainsetPhone.csv"
+PATH = "..\\data\\test2930.csv"
 gen = rawGenerator(PATH)
 
 rowNum = 1 #header

@@ -4,7 +4,7 @@ import time
 #DATA GENERATION
 
 
-def baseGenerator(path, numBatches, lengthBatch, holdout=[], polynomial=False, polyRange=[], sep=","):
+def baseGenerator(path, numBatches, lengthBatch, holdout=[], featCreators=[], sep=","):
     trainFile = open(path, "r")
     trainFile.readline() #discard column names
     
@@ -12,22 +12,12 @@ def baseGenerator(path, numBatches, lengthBatch, holdout=[], polynomial=False, p
         xBatch = []
         yBatch = []
         exampleIndex = 0
-
-        timeReadRow = 0
-        timeHoldout = 0
-        timePop = 0
-        timePoly = 0
-        timeHash = 0
-        timeBatch = 0
-        
         while exampleIndex < lengthBatch:
-            start = time.time()
             #READ ROW
             line = trainFile.readline()
             if line == "": break #break at end of file
             line = line[:-1] #discard line break char
             example = line.split(sep)
-            start1 = time.time()
             #MUST HOLDOUT ?
             holdoutFlag = False
             for i in holdout:
@@ -36,46 +26,17 @@ def baseGenerator(path, numBatches, lengthBatch, holdout=[], polynomial=False, p
                     holdoutFlag = True
                     break
             if holdoutFlag: continue
-            start2 = time.time()
             #REMOVE TARGET AND ID
             target = float(example[1]) #get click status
             example.pop(1) #remove target from features            
             example.pop(0) #remove ID
-            start3 = time.time()
-            #REMOVE SCALING FEATURES
-            example.pop(8) #device_id
-            example.pop(9) #device_ip
-            example.pop(10)#device_model            
-            #CREATE POLYNOMIAL FEATURES
-##            example.append(example[polyRange[0]]+"_"+example[polyRange[1]])
-##            if polynomial:
-##                for i in polyRange:
-##                    example.append(example[i[0]]+"_"+example[i[1]])
-##                for i in polyRange:
-##                    for j in range(i+1,polyRange[1]):
-##                        example.append(example[i] + "_" + example[j])
-            start4 = time.time()
-            #PREPARE FOR HASHER
-            pairs = [(i,1.0) for i in example]
-            example = pairs
-            start5 = time.time()
+            #CALL FEATURE CREATION ROUTINES
+            for f in featCreators:
+                f(example)
             #ADD TO BATCH
             xBatch.append(example)
             yBatch.append(target)
             exampleIndex +=  1
-            start6 = time.time()
-            timeReadRow += start1 - start
-            timeHoldout += start2 - start1
-            timePop += start3 - start2
-            timePoly += start4 - start3
-            timeHash += start5 - start4
-            timeBatch += start6 - start5
-##        print("TimeReadRow:", timeReadRow)
-##        print("TimeHoldout:", timeHoldout)
-##        print("TimePop:", timePop)
-##        print("TimePoly:", timePoly)
-##        print("TimeHash:", timeHash)
-##        print("TimeBatch:", timeBatch)
         if len(xBatch) != 0: #in case of end of file
             yield xBatch, yBatch
             
@@ -83,7 +44,7 @@ def baseGenerator(path, numBatches, lengthBatch, holdout=[], polynomial=False, p
     
 
 
-def testGenerator(testPath, numBatches, polynomial=False, sep=","):
+def testGenerator(testPath, numBatches, featCreators=[], sep=","):
     testFile = open(testPath,"r")
     line = testFile.readline() #discard header row
     perbatch = 5000000/numBatches
@@ -92,23 +53,17 @@ def testGenerator(testPath, numBatches, polynomial=False, sep=","):
         idBatch = []
         exampleIndex = 0
         while exampleIndex < perbatch:
+            #READ ROW
             line = testFile.readline()
             if line == "": break
             line = line[:-1]
             example = line.split(sep)
+            #REMOVE ID
             ID = example.pop(0)
-            #REMOVE SCALING FEATURES
-            example.pop(8) #device_id
-            example.pop(9) #device_ip
-            example.pop(10)#device_model  
-            #CREATE POLYNOMIAL FEATURES
-            if polynomial:
-                originalLength = len(example)
-                for i in range(originalLength):
-                    for j in range(i+1,originalLength):
-                        example.append(example[i] + "_" + example[j])
-            pairs = [(i, 1.) for i in example]
-            example = pairs
+            #CALL FEATURE CREATION ROUTINES
+            for f in featCreators:
+                f(example)
+            #ADD TO BATCH
             exampleIndex += 1
             xBatch.append(example)
             idBatch.append(ID)

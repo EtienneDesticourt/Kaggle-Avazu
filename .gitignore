@@ -54,3 +54,7 @@ sampleSubmission.csv
 __pycache__/
 *.csv
 *.npy
+.cproject
+.project
+*.pkl
+*.zip

@@ -7,7 +7,7 @@ from datetime import datetime
 class Model:
     def __init__(self,numFeatures, learningRate, mustShuffle=True):
         #Init scikit models
-        self.FH = FeatureHasher(n_features=numFeatures, input_type='pair')
+        self.FH = FeatureHasher(n_features=numFeatures, input_type='string')
         self.Classifier = SGDClassifier(penalty='l1', loss='log', alpha=learningRate, shuffle=mustShuffle)
     def train(self, gen, numEpochs,  v=False):
 
