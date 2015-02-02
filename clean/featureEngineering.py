@@ -18,7 +18,7 @@ def replaceHour(example):
     example.append(hour)
     
 
-def createInterationFunc(i0, i1):
+def createInteractionFunc(i0, i1):
     def addInteraction(example):
         newFeat = example[i0] + "_" + example[i1]
         example.append(newFeat)
