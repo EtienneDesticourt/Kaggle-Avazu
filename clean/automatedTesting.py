@@ -29,7 +29,7 @@ def save(classifier):
     fid.close()
     
 COUNTS = [22,89,172,227,52,153,125,207,49,142,21,216,90,199,68,59,97,80,212,29,128]
-def testModel(nfeatures, alpha, path, numBatchTrain, batchSize, funcs, testPath, numBatchTest, mustTest, numEpochs):
+def testModel(nfeatures, alpha, path, numBatchTrain, batchSize, funcs, testPath, numBatchTest, mustTest, numEpochs, penalty="l1"):
     Class = Model(nfeatures, alpha, numEpochs)
     
     generator = baseGenerator(path, numBatchTrain, batchSize, featCreators=funcs)
@@ -54,63 +54,63 @@ def findIndexes(count):
             c+=1
 
 scores = []
-numEpochs = 7
+numEpochs = 10
 i, j = findIndexes(89)
-funcs = [createInteractionFunc(i,j)]
-##score = testModel(NFEATURES, ALPHA, PATH, NUM_BATCH_TRAIN, SIZE_BATCH, funcs, TEST_PATH, NUM_BATCH_TEST, True, numEpochs)
-##scores.append(score)
+
+
+f = open("scoresSaved.csv","w")
+f.write("Scores,i,j\n")
+f.close()
+for i in range(23):
+    for j in range(i+1, 23):
+        numEpochs = 10
+        ALPHA = 0.000025
+        NFEATURES = 2**22
+        funcs = [createInteractionFunc(i,j)]
+        score = testModel(NFEATURES, ALPHA, PATH, NUM_BATCH_TRAIN, SIZE_BATCH, funcs, TEST_PATH, NUM_BATCH_TEST, True, numEpochs)
+        scores.append(score)
+        f = open("scoresSaved.csv","a")
+        f.write(str(scores)+","+str(i)+","+str(j)+"\n")
+        f.close()
 
 alphas = [0.000025,0.0001,0.000075]
 
 numEpochs = 10
 ALPHA = 0.000025
-NFEATURES = 2**24
-funcs = [createInteractionFunc(i,j)]
-score = testModel(NFEATURES, ALPHA, PATH, NUM_BATCH_TRAIN, SIZE_BATCH, funcs, TEST_PATH, NUM_BATCH_TEST, True, numEpochs)
-scores.append(score)
-
-numEpochs = 10
-ALPHA = 0.0001
-NFEATURES = 2**24
-funcs = [createInteractionFunc(i,j)]
-score = testModel(NFEATURES, ALPHA, PATH, NUM_BATCH_TRAIN, SIZE_BATCH, funcs, TEST_PATH, NUM_BATCH_TEST, True, numEpochs)
-scores.append(score)
-
-numEpochs = 10
-ALPHA = 0.000075
-NFEATURES = 2**24
-funcs = [createInteractionFunc(i,j)]
-score = testModel(NFEATURES, ALPHA, PATH, NUM_BATCH_TRAIN, SIZE_BATCH, funcs, TEST_PATH, NUM_BATCH_TEST, True, numEpochs)
-scores.append(score)
-
-bestAlpha = alphas[scores.index(min(scores))]
-numEpochs = 10
-ALPHA = bestAlpha
-NFEATURES = 2**23
-funcs = [createInteractionFunc(i,j)]
-score = testModel(NFEATURES, ALPHA, PATH, NUM_BATCH_TRAIN, SIZE_BATCH, funcs, TEST_PATH, NUM_BATCH_TEST, True, numEpochs)
-scores.append(score)
-
-numEpochs = 10
-ALPHA = bestAlpha
 NFEATURES = 2**22
-funcs = [createInteractionFunc(i,j)]
+funcs = []
 score = testModel(NFEATURES, ALPHA, PATH, NUM_BATCH_TRAIN, SIZE_BATCH, funcs, TEST_PATH, NUM_BATCH_TEST, True, numEpochs)
 scores.append(score)
 
-numEpochs = 10
-ALPHA = bestAlpha
-NFEATURES = 2**21
-funcs = [createInteractionFunc(i,j)]
-score = testModel(NFEATURES, ALPHA, PATH, NUM_BATCH_TRAIN, SIZE_BATCH, funcs, TEST_PATH, NUM_BATCH_TEST, True, numEpochs)
-scores.append(score)
+##numEpochs = 10
+##ALPHA = 0.00005
+##NFEATURES = 2**22
+##funcs = [createInteractionFunc(i,j)]
+##score = testModel(NFEATURES, ALPHA, PATH, NUM_BATCH_TRAIN, SIZE_BATCH, funcs, TEST_PATH, NUM_BATCH_TEST, True, numEpochs)
+##scores.append(score)
 
-numEpochs = 10
-ALPHA = bestAlpha
-NFEATURES = 2**20
-funcs = [createInteractionFunc(i,j)]
-score = testModel(NFEATURES, ALPHA, PATH, NUM_BATCH_TRAIN, SIZE_BATCH, funcs, TEST_PATH, NUM_BATCH_TEST, True, numEpochs)
-scores.append(score)
+
+
+##numEpochs = 10
+##ALPHA = bestAlpha
+##NFEATURES = 2**22
+##funcs = [createInteractionFunc(i,j)]
+##score = testModel(NFEATURES, ALPHA, PATH, NUM_BATCH_TRAIN, SIZE_BATCH, funcs, TEST_PATH, NUM_BATCH_TEST, True, numEpochs)
+##scores.append(score)
+##
+##numEpochs = 10
+##ALPHA = bestAlpha
+##NFEATURES = 2**21
+##funcs = [createInteractionFunc(i,j)]
+##score = testModel(NFEATURES, ALPHA, PATH, NUM_BATCH_TRAIN, SIZE_BATCH, funcs, TEST_PATH, NUM_BATCH_TEST, True, numEpochs)
+##scores.append(score)
+##
+##numEpochs = 10
+##ALPHA = bestAlpha
+##NFEATURES = 2**20
+##funcs = [createInteractionFunc(i,j)]
+##score = testModel(NFEATURES, ALPHA, PATH, NUM_BATCH_TRAIN, SIZE_BATCH, funcs, TEST_PATH, NUM_BATCH_TEST, True, numEpochs)
+##scores.append(score)
 
 ##numEpochs = 10
 ##k, l = findIndexes(43)

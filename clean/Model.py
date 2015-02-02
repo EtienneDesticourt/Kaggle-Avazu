@@ -5,10 +5,10 @@ from avazuScorer import llfun
 from datetime import datetime
 
 class Model:
-    def __init__(self,numFeatures, learningRate, numEpochs, mustShuffle=True):
+    def __init__(self,numFeatures, learningRate, numEpochs, ppenalty="l1", mustShuffle=True):
         #Init scikit models
         self.FH = FeatureHasher(n_features=numFeatures, input_type='string')
-        self.Classifier = SGDClassifier(penalty='l1', loss='log', alpha=learningRate, n_iter = numEpochs, shuffle=mustShuffle)
+        self.Classifier = SGDClassifier(penalty=ppenalty, loss='log', alpha=learningRate, n_iter = numEpochs, shuffle=mustShuffle)
     def train(self, gen,  v=False):
 
         i = 0
