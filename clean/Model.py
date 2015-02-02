@@ -5,18 +5,18 @@ from avazuScorer import llfun
 from datetime import datetime
 
 class Model:
-    def __init__(self,numFeatures, learningRate, mustShuffle=True):
+    def __init__(self,numFeatures, learningRate, numEpochs, mustShuffle=True):
         #Init scikit models
         self.FH = FeatureHasher(n_features=numFeatures, input_type='string')
-        self.Classifier = SGDClassifier(penalty='l1', loss='log', alpha=learningRate, shuffle=mustShuffle)
-    def train(self, gen, numEpochs,  v=False):
+        self.Classifier = SGDClassifier(penalty='l1', loss='log', alpha=learningRate, n_iter = numEpochs, shuffle=mustShuffle)
+    def train(self, gen,  v=False):
 
         i = 0
         for x, y in gen: #For each batch
             xHash = self.FH.transform(x) #hash trick
             y = np.array(y)            
-            for epoch in range(numEpochs):
-                self.Classifier.partial_fit(xHash, y, [0,1])
+##            for epoch in range(numEpochs):
+            self.Classifier.partial_fit(xHash, y, [0,1])
             i += len(x)
             if v : print(str(datetime.now())[:-7] , "example:", i)
             

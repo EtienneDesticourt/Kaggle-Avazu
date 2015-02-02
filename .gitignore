@@ -52,10 +52,32 @@ train.csv
 train2.csv
 sampleSubmission.csv
 __pycache__/
-*.csv
 *.npy
 .cproject
 .project
 *.pkl
 *.zip
 *.pyc
+clean/scoreSave.csv
+data/hundredth.csv
+data/hundredthfreq.csv
+data/hundredthfreq1.csv
+data/tenth.csv
+data/tenthfreq.csv
+data/tenthfreq1.csv
+data/test2930.csv
+data/test293010th.csv
+data/testfreq.csv
+data/testfreq1.csv
+data/testScores - Copy (2).csv
+data/testScores - Copy (3).csv
+data/testScores - Copy.csv
+data/testScores.csv
+data/testsetComp.csv
+data/testsetPhone.csv
+data/train10th.csv
+data/trainsetComp.csv
+data/trainsetPhone.csv
+data/trainsetPhone10.csv
+data/trainsetPhone100.csv
+data/trainsetPhone2930.csv
