@@ -1,19 +1,15 @@
-from Model import Model
-from avazuGenerators import baseGenerator, testGenerator
-from featureEngineering import crossSiteApp, replaceHour, createInteractionFunc
-import pickle
 from math import ceil
-#CONSTANTS
-##ALPHA = 0.0000028
-##NFEATURES = 2**23
-##NEPOCHS = 15
-ALPHA =0.00005
-NFEATURES = 2**24
+import pickle
+from LightModel import LightModel
+from avazuGenerators import visitsGenerator
+
+ALPHA =0.000025
+NFEATURES = 2**26
 NEPOCHS = 10
 
-PATH = "..\\data\\trainIPID.csv"
-TEST_PATH = "..\\data\\testIPDID2930.csv"
-SUB_PATH = "..\\data\\testIPID.csv"
+PATH = "..\\data\\train1IPID.csv"
+TEST_PATH = "..\\data\\test1IPID.csv"
+SUB_PATH = "..\\data\\test.csv"
 OUT_PATH = "..\\data\\submission.csv"
 
 SIZE_BATCH = 500000
@@ -31,42 +27,17 @@ def save(classifier):
 
 load = input("Load or train?(l/t)")
 
-#CREATE INTERACTING FEATURES
-feat1 = [8, 2, 1, 4, 9, 15, 2, 8, 6, 12, 2]
-feat2 = [16, 3, 2, 12, 20, 18, 12, 14, 15, 22, 9]
-
-
-def findIndexes(count):
-    c=0
-    for i in range(23):
-        for j in range(i+1,23):
-            if c==count: return (i,j)
-            c+=1
-
-def removeFeats(example):
-##    example.pop(22)
-##    example.pop(22)
-    pass
-
-##funcs = []
-##for i in range(1):
-##    i = 3
-##    print(feat1[i],feat2[i])
-##    funcs.append(createInteractionFunc(feat1[i],feat2[i]))
-
-i, j = findIndexes(8)
-funcs = []#[removeFeats, createInteractionFunc(i, j)]
 
 if load == "t":
-    Class = Model(NFEATURES, ALPHA, NEPOCHS, mustShuffle=True)
+    Class = LightModel(ALPHA, NEPOCHS, mustShuffle=True)
     #TRAINING
     print("Starting training.")
-    generator = baseGenerator(PATH, NUM_BATCH_TRAIN, SIZE_BATCH, featCreators=funcs)
+    generator = visitsGenerator(PATH, NUM_BATCH_TRAIN, SIZE_BATCH)
     Class.train(generator, v=True)
 
     #TESTING
     print("Starting testing.")
-    generator = baseGenerator(TEST_PATH, NUM_BATCH_TEST, SIZE_BATCH, featCreators=funcs)
+    generator = visitsGenerator(TEST_PATH, NUM_BATCH_TEST, SIZE_BATCH)
     Class.test(generator, v=True)
 
 

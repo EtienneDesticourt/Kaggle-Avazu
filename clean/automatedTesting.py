@@ -14,10 +14,10 @@ NFEATURES = 2**23
 NEPOCHS = 1
 
 
-PATH = "..\\data\\train.csv"
-TEST_PATH = "..\\data\\test2930.csv"
+PATH = "..\\data\\trainIPIID.csv"
+TEST_PATH = "..\\data\\testIPID2930.csv"
 
-SIZE_BATCH = 1500000
+SIZE_BATCH = 500000
 NUM_EXAMPLES_TRAIN = (40428968 - 8051546) / 1
 NUM_BATCH_TRAIN = int(NUM_EXAMPLES_TRAIN / SIZE_BATCH)
 NUM_EXAMPLES_TEST = 8051546 / 1
@@ -55,32 +55,103 @@ def findIndexes(count):
 
 scores = []
 numEpochs = 10
-i, j = findIndexes(89)
+##i, j = findIndexes(89)
 
 
-f = open("scoresSaved.csv","w")
-f.write("Scores,i,j\n")
-f.close()
-for i in range(23):
-    for j in range(i+1, 23):
-        numEpochs = 10
-        ALPHA = 0.000025
-        NFEATURES = 2**22
-        funcs = [createInteractionFunc(i,j)]
-        score = testModel(NFEATURES, ALPHA, PATH, NUM_BATCH_TRAIN, SIZE_BATCH, funcs, TEST_PATH, NUM_BATCH_TEST, True, numEpochs)
-        scores.append(score)
-        f = open("scoresSaved.csv","a")
-        f.write(str(scores)+","+str(i)+","+str(j)+"\n")
-        f.close()
+##f = open("scoresSaved.csv","w")
+##f.write("Scores,i,j\n")
+##f.close()
+##for i in range(23):
+##    for j in range(i+1, 23):
+##        numEpochs = 10
+##        ALPHA = 0.000025
+##        NFEATURES = 2**22
+##        funcs = [createInteractionFunc(i,j)]
+##        score = testModel(NFEATURES, ALPHA, PATH, NUM_BATCH_TRAIN, SIZE_BATCH, funcs, TEST_PATH, NUM_BATCH_TEST, True, numEpochs)
+##        scores.append(score)
+##        f = open("scoresSaved.csv","a")
+##        f.write(str(scores)+","+str(i)+","+str(j)+"\n")
+##        f.close()
 
-alphas = [0.000025,0.0001,0.000075]
+##alphas = [0.000025,0.0001,0.000075]
+##
 
+
+
+i = 10
+for j in range(1,23):
+    
+    numEpochs = 10
+    ALPHA = 0.000025
+    NFEATURES = 2**26
+    funcs = [createInteractionFunc(i, j)]
+    score = testModel(NFEATURES, ALPHA, PATH, NUM_BATCH_TRAIN, SIZE_BATCH, funcs, TEST_PATH, NUM_BATCH_TEST, True, numEpochs)
+    scores.append(score)
+
+
+
+
+
+
+
+
+
+
+input()
 numEpochs = 10
 ALPHA = 0.000025
+NFEATURES = 2**28
+funcs = []
+score = testModel(NFEATURES, ALPHA, PATH, NUM_BATCH_TRAIN, SIZE_BATCH, funcs, TEST_PATH, NUM_BATCH_TEST, True, numEpochs)
+scores.append(score)
+
+
+
+numEpochs = 10
+ALPHA = 0.15
 NFEATURES = 2**22
 funcs = []
 score = testModel(NFEATURES, ALPHA, PATH, NUM_BATCH_TRAIN, SIZE_BATCH, funcs, TEST_PATH, NUM_BATCH_TEST, True, numEpochs)
 scores.append(score)
+
+
+numEpochs = 10
+ALPHA = 0.015
+NFEATURES = 2**22
+funcs = []
+score = testModel(NFEATURES, ALPHA, PATH, NUM_BATCH_TRAIN, SIZE_BATCH, funcs, TEST_PATH, NUM_BATCH_TEST, True, numEpochs)
+scores.append(score)
+
+
+numEpochs = 10
+ALPHA = 0.0015
+NFEATURES = 2**22
+funcs = []
+score = testModel(NFEATURES, ALPHA, PATH, NUM_BATCH_TRAIN, SIZE_BATCH, funcs, TEST_PATH, NUM_BATCH_TEST, True, numEpochs)
+scores.append(score)
+
+numEpochs = 10
+ALPHA = 0.000025
+NFEATURES = 2**26
+funcs = []
+score = testModel(NFEATURES, ALPHA, PATH, NUM_BATCH_TRAIN, SIZE_BATCH, funcs, TEST_PATH, NUM_BATCH_TEST, True, numEpochs)
+scores.append(score)
+
+
+numEpochs = 10
+ALPHA = 0.000025
+NFEATURES = 2**24
+funcs = []
+score = testModel(NFEATURES, ALPHA, PATH, NUM_BATCH_TRAIN, SIZE_BATCH, funcs, TEST_PATH, NUM_BATCH_TEST, True, numEpochs)
+scores.append(score)
+
+
+
+
+
+
+
+
 
 ##numEpochs = 10
 ##ALPHA = 0.00005

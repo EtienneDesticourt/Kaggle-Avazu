@@ -6,9 +6,47 @@ import time
 
 def baseGenerator(path, numBatches, lengthBatch, holdout=[], featCreators=[], sep=","):
     trainFile = open(path, "r")
-    trainFile.readline() #discard column names
+    header = trainFile.readline() #discard column names
+    numFeats = len(header.split(",")) - 2 #minus ID and click
     
     for batchIndex in range(numBatches):
+        xBatch = []
+        yBatch = []
+        exampleIndex = 0
+        odd = 1
+        while exampleIndex < lengthBatch:
+            #READ ROW
+            line = trainFile.readline()
+            if line == "": break #break at end of file
+            line = line[:-1] #discard line break char
+            example = line.split(sep)
+            #REMOVE TARGET AND ID
+            target = float(example[1]) #get click status
+            example.pop(1) #remove target from features            
+            example.pop(0) #remove ID
+            example[0] = example[0][6:]
+            #CALL FEATURE CREATION ROUTINES
+            for f in featCreators:
+                f(example)
+            #ADD TO BATCH
+##            if target == odd:
+            xBatch.append(example)
+            yBatch.append(target)
+##                odd = 1 - odd
+            exampleIndex +=  1
+        if len(xBatch) != 0: #in case of end of file
+            yield np.array(xBatch), np.array(yBatch)
+            
+    trainFile.close()
+    
+def visitsGenerator(path, numBatches, lengthBatch, holdout=[], featCreators=[], sep=","):
+    trainFile = open(path, "r")
+    header = trainFile.readline() #discard column names
+    numFeats = len(header.split(",")) - 2 #minus ID and click
+    
+    for batchIndex in range(numBatches):
+##        xBatch = np.array([]).reshape(0, numFeats)
+##        yBatch = np.array([]).reshape(0, 1)
         xBatch = []
         yBatch = []
         exampleIndex = 0
@@ -18,31 +56,18 @@ def baseGenerator(path, numBatches, lengthBatch, holdout=[], featCreators=[], se
             if line == "": break #break at end of file
             line = line[:-1] #discard line break char
             example = line.split(sep)
-            #MUST HOLDOUT ?
-            holdoutFlag = False
-            for i in holdout:
-                if exampleIndex % i == 0:
-                    exampleIndex += 1
-                    holdoutFlag = True
-                    break
-            if holdoutFlag: continue
             #REMOVE TARGET AND ID
             target = float(example[1]) #get click status
-            example.pop(1) #remove target from features            
-            example.pop(0) #remove ID
-            #CALL FEATURE CREATION ROUTINES
-            for f in featCreators:
-                f(example)
+            example = example[-2:]
+            example = [float(i) for i in example]
             #ADD TO BATCH
             xBatch.append(example)
             yBatch.append(target)
             exampleIndex +=  1
         if len(xBatch) != 0: #in case of end of file
-            yield xBatch, yBatch
+            yield np.array(xBatch), np.array(yBatch)
             
     trainFile.close()
-    
-
 
 def testGenerator(testPath, numBatches, featCreators=[], sep=","):
     testFile = open(testPath,"r")

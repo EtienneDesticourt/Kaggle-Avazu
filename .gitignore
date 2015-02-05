@@ -81,3 +81,13 @@ data/trainsetPhone.csv
 data/trainsetPhone10.csv
 data/trainsetPhone100.csv
 data/trainsetPhone2930.csv
+data/submission.rar
+clean/scoresSaved.csv
+data/test1IPID.csv
+data/testIP2930.csv
+data/testIPDID2930.csv
+data/testIPID.csv
+data/testIPID2930.csv
+data/train1IPID.csv
+data/trainIP.csv
+data/trainIPID.csv
