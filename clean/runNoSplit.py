@@ -7,12 +7,12 @@ from math import ceil
 ##ALPHA = 0.0000028
 ##NFEATURES = 2**23
 ##NEPOCHS = 15
-ALPHA =0.00005
-NFEATURES = 2**24
+ALPHA =0.000025
+NFEATURES = 2**22
 NEPOCHS = 10
 
-PATH = "..\\data\\trainIPID.csv"
-TEST_PATH = "..\\data\\testIPDID2930.csv"
+PATH = "..\\data\\trainFinalIPID.csv"
+TEST_PATH = "..\\data\\testFinalIPID2930.csv"
 SUB_PATH = "..\\data\\testIPID.csv"
 OUT_PATH = "..\\data\\submission.csv"
 
@@ -96,3 +96,4 @@ for pBatch, idBatch in predictionGen:
     i += 1
 
 outputFile.close()
+print("done")

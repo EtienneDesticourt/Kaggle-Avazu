@@ -85,6 +85,7 @@ def testGenerator(testPath, numBatches, featCreators=[], sep=","):
             example = line.split(sep)
             #REMOVE ID
             ID = example.pop(0)
+            example[0] = example[0][6:]
             #CALL FEATURE CREATION ROUTINES
             for f in featCreators:
                 f(example)

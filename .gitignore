@@ -91,3 +91,11 @@ data/testIPID2930.csv
 data/train1IPID.csv
 data/trainIP.csv
 data/trainIPID.csv
+data/testFinalIPID.csv
+data/testFinalIPID2930.csv
+data/trainFinalIPID.csv
+data/submission1.rar
+VowpalWabbit/train.vw
+VowpalWabbit/test.vw
+VowpalWabbit/train.vw.cache
+VowpalWabbit/avazu.preds.txt
