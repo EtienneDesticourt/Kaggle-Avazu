@@ -28,12 +28,12 @@ def csvToVW(pathCSV, pathVW, v=False):
         row.pop(labelIndex)
         row.pop(idIndex)
         #Add features
-        features = "categorical " #namespace
+        features = "" #namespace
         for featIndex in range(len(row)):
-            features += headerRow[featIndex] + "=" + row[featIndex]+" "
+            features += headerRow[featIndex] + " " + row[featIndex]+" |"
         formattedRow += features
 
-        VW.write(formattedRow+"\n")
+        VW.write(formattedRow[:-1]+"\n")
         
         rowIndex += 1
         if rowIndex % 1000000 == 0 and v:
