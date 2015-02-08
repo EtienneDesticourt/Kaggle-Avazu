@@ -99,3 +99,14 @@ VowpalWabbit/train.vw
 VowpalWabbit/test.vw
 VowpalWabbit/train.vw.cache
 VowpalWabbit/avazu.preds.txt
+*.vw
+*.vw
+*.rar
+*.cache
+*.writing
+VowpalWabbit/testSep2.csv
+VowpalWabbit/readable.model
+VowpalWabbit/avazu.model.vw
+VowpalWabbit/scores.csv
+VowpalWabbit/avazu.model.vw
+VowpalWabbit/avazu.model.vw
