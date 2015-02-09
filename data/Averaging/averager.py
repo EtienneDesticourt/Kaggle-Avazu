@@ -3,11 +3,11 @@
 
 f0 = open("0.csv","r")
 f1 = open("1.csv","r")
-f2 = open("2.csv","r")
-f3 = open("3.csv","r")
+##f2 = open("2.csv","r")
+##f3 = open("3.csv","r")
 f4 = open("sub.csv","w")
 
-fs = [f0,f1,f2,f3]
+fs = [f0,f1]#,f2,f3]
 for i in fs:
     r = i.readline()
 
@@ -25,7 +25,7 @@ while 1:
     tot = 0
     for i in rs:
         tot += float(i[1])
-    tot = tot / 4
+    tot = tot / len(fs)
 
     f4.write(ID+","+str(tot)+"\n")
 
